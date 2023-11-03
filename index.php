@@ -17,7 +17,7 @@
 
 	use TelegramBot as Bot;
 
-	$token = "6004032462:AAE55VBveQLLWqlGr1FaYiVenaaVrvrApxE";
+	$token = "6759095381:AAFNQ_PhALW8fsqi-rOoSfpOI4cxjMmPPV0";
 	$dataSet = ['botToken'=>$token];
 
 	$bot = new Bot($dataSet);
