@@ -1,55 +1,37 @@
 <?php
-
-	/**
-        * 
-        * @author https://github.com/KomiljonovDev/, 
-        * @author https://t.me/GoldCoderUz, 
-        * @author https://t.me/uzokdeveloper, 
-        * @author https://t.me/komiljonovdev,
-        * 
-    */
+    # show error message
     ini_set('error_reporting', 1);
     ini_set('display_errors', 1);
-
-	require 'Telegram/TelegramBot.php';
-	require 'db_config/db_config.php';
-	require 'helpers/functions.php';
-
+    #require the required files
+	require './Telegram/TelegramBot.php';
+	require './db_config/db_config.php';
+	require './helpers/functions.php';
+    #require Telegram Bot func | It helps to response to user's updates
 	use TelegramBot as Bot;
+	$bot = new Bot(['botToken'=>"6759095381:AAFNQ_PhALW8fsqi-rOoSfpOI4cxjMmPPV0"]); # set up bot token as array and send it as argument
 
-	$token = "6759095381:AAFNQ_PhALW8fsqi-rOoSfpOI4cxjMmPPV0";
-	$dataSet = ['botToken'=>$token];
-
-	$bot = new Bot($dataSet);
-
-	require_once 'helpers/variebles.php';
+    require_once './helpers/variebles.php';
 	$db = new db_config;
-
-	include 'helpers/sendMessageToUsers.php';
-
-	include 'helpers/activeUsers.php';
-
-	$inline_keyboard  = [
-		[
-			['text'=>"inline keyboard", 'callback_data'=>'inline_key']
-		]
-	];
+    #include second parameters
+	include './helpers/sendMessageToUsers.php';
+	include './helpers/activeUsers.php';
+    include './helpers/markups.php';
 
 
-	$resize_keyoard = [
-		[
-			['text'=>"✅ Yuborish"],
-			['text'=>"✍️ Tahrirlash"],
-		]
-	];
-
+    #handle the updates
 	if ($update) {
+        #get message updated
 		if (isset($update->message)) {
 			if ($type == 'private') {
+                #insert user to database
 				if (removeBotUserName($text) == "/start") {
 					$myUser = myUser(['fromid','name','user','chat_type','lang','del'],[$fromid,$full_name,$user ?? null,'private','',0]);
 				}
+                #inserting user to database has been finished
+
+                #check if user is subscribed to all required channels
 				if (channel($fromid)) {
+                    #get user data from database
 					$user = mysqli_fetch_assoc(
 						$db->selectWhere('users',[
 							[
@@ -59,10 +41,12 @@
 						])
 					);
 					$user_data = json_decode($user['data']);
-					if (removeBotUserName($text) == "/start") {
+
+                    #action starts from next line
+                    if (removeBotUserName($text) == "/start") {
 						$db->updateWhere('users',
 							[
-								'data'=>'register',
+								'data'=>'region',
 								'step'=>1
 							],
 							[
@@ -70,28 +54,8 @@
 								'cn'=>'='
 							]
 						);
-						if ($myUser) {
-							$bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($inline_keyboard)->sendMessage("<b>Assalomu alaykum, " . $full_name ." siz 1-martta botga start berdingiz </b>");
-							exit();
-						}
-						$bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($inline_keyboard)->sendMessage("<b>Assalomu alaykum, " . $full_name ." siz 2-martta botga start berdingiz</b>");
+						$bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($regions)->sendMessage("<b>Assalomu alaykum, " . $full_name ." <b>ARGOS Namangan</b>ning rasmiy botiga xush kelibsiz. Viloyatingizni tanlang</b>");
 						exit();
-					}
-					if ($user['data'] == 'register' && $user['step'] == '2') {
-						if ($text) {
-							$db->updateWhere('users',
-								[
-									'step'=>3,
-									'full_name'=>$text
-								],
-								[
-									'fromid'=>$fromid,
-									'cn'=>'='
-								]
-							);
-
-							$bot->sendChatAction('typing', $fromid)->sendMessage("Bog'lanish uchun telefon raqamingizni yuboring:");
-						}
 					}
 				}
 			}else{
@@ -107,26 +71,38 @@
 				}
 			}
 		}
+        #get callback query updates
         else if (isset($update->callback_query)) {
-			if (channel($cbid)) {
-
+            #checking if user subscribed to all required channels
+			if (channel($call_from_id)) {
+                #get data from db about the user
 				$user = mysqli_fetch_assoc(
 					$db->selectWhere('users',[
 						[
-							'fromid'=>$cbid,
+							'fromid'=>$call_from_id,
 							'cn'=>'='
 						]
 					])
 				);
+                $user_data = json_decode($user['data']);
 
-				if ($data == 'res') {
-					$bot->sendChatAction('typing', $cbid)->editMessageText("Assalomu alaykum, xush kelibsiz!", $mid);
-					exit();
-				}
-
-				if ($data == 'inline_key') {
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyBoard($inline_keyboard)->editMessageText("Edit bo'ldi", $mid);
-					exit();
+                # actions start from here
+				if ($data) {
+                    if ($user_data['region']){
+                        $db->updateWhere('users',
+                            [
+                                'data'=>'default',
+                                'step'=>1,
+                                'region'=>$data
+                            ],
+                            [
+                                'fromid'=>$call_from_id,
+                                'cn'=>'='
+                            ]
+                        );
+                        $bot->sendChatAction('typing', $call_from_id)->sendMessage("O'z xabaringizni yuboring", $call_from_id);
+                        exit();
+                    }
 				}
 			}
 		}

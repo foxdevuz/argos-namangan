@@ -31,14 +31,14 @@
             $fid = $message->forward_from_message_id;
         }else if(isset($update->callback_query)){
             $callback = $update->callback_query;
-            $qid = $callback->id;
+            $call_id = $callback->id;
             $mes = $callback->message;
-            $mid = $mes->message_id;
-            $cmtx = $mes->text;
-            $cid = $callback->message->chat->id;
-            $ctype = $callback->message->chat->type;
-            $cbid = $callback->from->id;
-            $cbuser = $callback->from->username;
+            $call_message_id = $mes->message_id;
+            $call_message_text = $mes->text;
+            $call_message_chat_id = $callback->message->chat->id;
+            $call_message_chat_type = $callback->message->chat->type;
+            $call_from_id = $callback->from->id;
+            $call_user_name = $callback->from->username;
             $data = $callback->data;
         }
     }

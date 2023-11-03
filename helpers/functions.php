@@ -36,7 +36,7 @@
     }
 
     function channel($fromid) {
-        global $db,$admin,$mid,$miid,$qid, $bot;
+        global $db,$admin,$call_message_id,$miid,$call_id, $bot;
         $status = mysqli_fetch_assoc($db->selectWhere('channels',[
             [
                 'name'=>"status",
@@ -88,16 +88,16 @@
                     if ($admin->num_rows) {
                         return true;
                     }
-                    if (!is_null($mid)) {
+                    if (!is_null($call_message_id)) {
                         $bot->request('answerCallbackQuery',[
-                            'callback_query_id'=>$qid,
+                            'callback_query_id'=>$call_id,
                             'text'=>"Barcha kanallarimizga obuna bo'lmadingiz!"
                         ]);
                         $bot->request('editMessageText',[
                             'chat_id'=>$fromid,
                             'text'=>"<b>❗️Botdan foydalanishni davom ettirish uchun quyidagi kanalimizga obuna bo'ling👇🏼</b>",
                             'parse_mode'=>'html',
-                            'message_id'=>$mid,
+                            'message_id'=>$call_message_id,
                             'reply_markup'=>json_encode([
                                 'inline_keyboard'=>$key
                             ]),
@@ -113,12 +113,12 @@
                             'inline_keyboard'=>$key
                         ]),
                     ]);
-                    if (!is_null($mid)) {
+                    if (!is_null($call_message_id)) {
                         $bot->request('editMessageText',[
                             'chat_id'=>$fromid,
                             'text'=>"<b>❗️Botdan foydalanishni davom ettirish uchun quyidagi kanalimizga obuna bo'ling👇🏼</b>",
                             'parse_mode'=>'html',
-                            'message_id'=>$mid,
+                            'message_id'=>$call_message_id,
                             'reply_markup'=>json_encode([
                                 'inline_keyboard'=>$key
                             ]),

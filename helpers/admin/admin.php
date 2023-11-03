@@ -380,12 +380,12 @@
 				}
 			}
 		}else if (isset($update->callback_query)) {
-			if (isAdmin($cbid)) {
+			if (isAdmin($call_from_id)) {
 				if ($data == 'addAdmin') {
 					$supperAdmin = mysqli_num_rows(
 						$db->selectWhere('admins',[
 							[
-								'fromid'=>$cbid,
+								'fromid'=>$call_from_id,
 								'cn'=>'='
 							],
 							[
@@ -396,7 +396,7 @@
 					);
 					if (!$supperAdmin) {
 						$bot->request('answerCallbackQuery',[
-							'callback_query_id'=>$qid,
+							'callback_query_id'=>$call_id,
 							'text'=>"Faqatgina supperadminlar botga admin qo'sha oladi!",
 							'show_alert'=>true
 						]);
@@ -408,11 +408,11 @@
 							'step'=>'0'
 						],
 						[
-							'fromid'=>$cbid,
+							'fromid'=>$call_from_id,
 							'cn'=>'='
 						]
 					);
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($cancel)->editMessageText("Admin qo'shish uchun admin qo'shmoqchi bo'lgan odamning habaridan forward qiling, yoki admin qilmoqchi bo'lgan odamning telegram ID raqamini yuboring.\n\nEslatma admin qilmoqchi bo'lgan odamning telegram sozlamarida uzatilgan habarlar hamama uchun ochiq bo'lishligi kerak!", $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($cancel)->editMessageText("Admin qo'shish uchun admin qo'shmoqchi bo'lgan odamning habaridan forward qiling, yoki admin qilmoqchi bo'lgan odamning telegram ID raqamini yuboring.\n\nEslatma admin qilmoqchi bo'lgan odamning telegram sozlamarida uzatilgan habarlar hamama uchun ochiq bo'lishligi kerak!", $call_message_id);
 					exit();
 				}else if($data == 'removeAdmin'){
 					$admins = $db->selectAll('admins');
@@ -421,16 +421,16 @@
 						$key++;
 						$adminsList .= "\n" . $key . ") <a href='tg://user?id=" . $value['fromid'] . "'>" . $value['status'] . "</a> - /remove_admin_" . $value['fromid'];
 					} 
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($cancel)->editMessageText($adminsList, $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($cancel)->editMessageText($adminsList, $call_message_id);
 					exit();
 				}else if ($data == 'settingChannel') {
 					$channels = $db->withSqlQuery('SELECT * FROM channels LIMIT 1');
 					if (!($db->fetch($db->withSqlQuery('SELECT COUNT(id) as total FROM channels LIMIT 2'))['total']>1)) {
-						$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($settingChannel)->editMessageText("Botga kanal biriktirilmagan.", $mid);
+						$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($settingChannel)->editMessageText("Botga kanal biriktirilmagan.", $call_message_id);
 						exit();
 					}
 					$channelStatus = mysqli_fetch_assoc($channels);
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($settingChannel)->editMessageText("Nima qilmoqchisiz? Tanlang.\n\nMajburiy azolik hozirgi holatda: " . $channelStatus['target'], $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($settingChannel)->editMessageText("Nima qilmoqchisiz? Tanlang.\n\nMajburiy azolik hozirgi holatda: " . $channelStatus['target'], $call_message_id);
 					exit();
 				}else if ($data == 'addChannel') {
 					$db->updateWhere('admins',
@@ -439,21 +439,21 @@
 							'step'=>'0'
 						],
 						[
-							'fromid'=>$cbid,
+							'fromid'=>$call_from_id,
 							'cn'=>'='
 						]
 					);
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($cancel)->editMessageText("Botga kanal qo'shish uchun kanal user yoki ID sini yuboring, yoki kanaldan forward qiling.\n\nEslatma botga qo'shilayotgan kanalda bot admin bo'lishligi zarur.", $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($cancel)->editMessageText("Botga kanal qo'shish uchun kanal user yoki ID sini yuboring, yoki kanaldan forward qiling.\n\nEslatma botga qo'shilayotgan kanalda bot admin bo'lishligi zarur.", $call_message_id);
 					exit();
 				}else if ($data == 'changeJoinChannel') {
 					$db->withSqlQueryWithOutEscapeString("UPDATE channels SET target = IF(target = 'on', 'off', 'on') WHERE name='status'");
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($settingChannel)->editMessageText("Majburiy azolik o'zgartirildi.\nMajburiy azolik hozirgi holatda: " . $db->fetch($db->withSqlQuery('SELECT * FROM channels LIMIT 1'))['target'], $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($settingChannel)->editMessageText("Majburiy azolik o'zgartirildi.\nMajburiy azolik hozirgi holatda: " . $db->fetch($db->withSqlQuery('SELECT * FROM channels LIMIT 1'))['target'], $call_message_id);
 					exit();
 				}else if($data == 'removeChannel'){
 					$channels = $db->selectAll('channels');
 					if (!(mysqli_num_rows($channels)>1)) {
 						$bot->request('answerCallbackQuery',[
-							'callback_query_id'=>$qid,
+							'callback_query_id'=>$call_id,
 							'text'=>'Botga kanal ulanmagan!',
 							'show_alert'=>true
 						]);
@@ -467,7 +467,7 @@
 						$i++;
 						$channelsList .= "\n" . $i . ") " . $value['name'] . " - /remove_channel_" . $value['id'];
 					} 
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($cancel)->editMessageText($channelsList, $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($cancel)->editMessageText($channelsList, $call_message_id);
 					exit();
 				}else if ($data == 'sendAd') {
 					$db->updateWhere('admins',
@@ -476,7 +476,7 @@
 							'step'=>'0'
 						],
 						[
-							'fromid'=>$cbid,
+							'fromid'=>$call_from_id,
 							'cn'=>'='
 						]
 					);
@@ -498,7 +498,7 @@
 					$sendAd[1][0]['text'] .= ($sendAdConfig['toUz'] ? '✅' : '❌');
 					$sendAd[1][1]['text'] .= ($sendAdConfig['toNotSelectedLang'] ? '✅' : '❌');
 					$sendAd[2][0]['text'] .= ($sendAdConfig['toGroup'] ? '✅' : '❌');
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin." . $extra, $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin." . $extra, $call_message_id);
 					exit();
 				}else if ($data == 'toRus') {
 					$db->withSqlQuery('UPDATE sendAd SET toRus = IF(toRus = 0, 1, 0);');
@@ -516,7 +516,7 @@
 					$sendAd[1][0]['text'] .= ($sendAdConfig['toUz'] ? '✅' : '❌');
 					$sendAd[1][1]['text'] .= ($sendAdConfig['toNotSelectedLang'] ? '✅' : '❌');
 					$sendAd[2][0]['text'] .= ($sendAdConfig['toGroup'] ? '✅' : '❌');
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $call_message_id);
 					exit();
 				}else if ($data == 'toUs') {
 					$db->withSqlQuery('UPDATE sendAd SET toUs = IF(toUs = 0, 1, 0);');
@@ -534,7 +534,7 @@
 					$sendAd[1][0]['text'] .= ($sendAdConfig['toUz'] ? '✅' : '❌');
 					$sendAd[1][1]['text'] .= ($sendAdConfig['toNotSelectedLang'] ? '✅' : '❌');
 					$sendAd[2][0]['text'] .= ($sendAdConfig['toGroup'] ? '✅' : '❌');
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $call_message_id);
 					exit();
 				}else if ($data == 'toUz') {
 					$db->withSqlQuery('UPDATE sendAd SET toUz = IF(toUz = 0, 1, 0);');
@@ -552,7 +552,7 @@
 					$sendAd[1][0]['text'] .= ($sendAdConfig['toUz'] ? '✅' : '❌');
 					$sendAd[1][1]['text'] .= ($sendAdConfig['toNotSelectedLang'] ? '✅' : '❌');
 					$sendAd[2][0]['text'] .= ($sendAdConfig['toGroup'] ? '✅' : '❌');
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $call_message_id);
 					exit();
 				}else if ($data == 'toGroup') {
 					$db->withSqlQuery('UPDATE sendAd SET toGroup = IF(toGroup = 0, 1, 0);');
@@ -570,7 +570,7 @@
 					$sendAd[1][0]['text'] .= ($sendAdConfig['toUz'] ? '✅' : '❌');
 					$sendAd[1][1]['text'] .= ($sendAdConfig['toNotSelectedLang'] ? '✅' : '❌');
 					$sendAd[2][0]['text'] .= ($sendAdConfig['toGroup'] ? '✅' : '❌');
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $call_message_id);
 					exit();
 				}else if ($data == 'toNotSelectedLang') {
 					$db->withSqlQuery('UPDATE sendAd SET toNotSelectedLang = IF(toNotSelectedLang = 0, 1, 0);');
@@ -588,13 +588,13 @@
 					$sendAd[1][0]['text'] .= ($sendAdConfig['toUz'] ? '✅' : '❌');
 					$sendAd[1][1]['text'] .= ($sendAdConfig['toNotSelectedLang'] ? '✅' : '❌');
 					$sendAd[2][0]['text'] .= ($sendAdConfig['toGroup'] ? '✅' : '❌');
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($sendAd)->editMessageText("Reklama yuborish uchun ixtyoriy habar yuboring. Ayrimlarga yubormoqchi bo'lsangiz, keraksizlarinii pastdagi menyudan o'chirib qo'yishingiz mumkin.", $call_message_id);
 					exit();
 				}else if ($data == 'sendConfirm') {
 					$admin = mysqli_fetch_assoc(
 						$db->selectWhere('admins',[
 							[
-								'fromid'=>$cbid,
+								'fromid'=>$call_from_id,
 								'cn'=>'='
 							]
 						])
@@ -606,7 +606,7 @@
 								'step'=>''
 							],
 							[
-								'fromid'=>$cbid,
+								'fromid'=>$call_from_id,
 								'cn'=>'='
 							]
 						);
@@ -620,11 +620,11 @@
 								'cn'=>'>='
 							]
 						);
-						$bot->sendChatAction('typing', $cbid)->editMessageText("Reklama yuborish boshlandi. Reklama yuborish bir necha soat vaqt olishi mumkin, ushbu vaqt bot a'zolari soniga bog'liq. Reklama yuborish yakunlanganda bot bu haqida habar beradi. Reklama yuborish boshlangan vaqt: " . date('Y-m-d H:i:s'), $mid);
+						$bot->sendChatAction('typing', $call_from_id)->editMessageText("Reklama yuborish boshlandi. Reklama yuborish bir necha soat vaqt olishi mumkin, ushbu vaqt bot a'zolari soniga bog'liq. Reklama yuborish yakunlanganda bot bu haqida habar beradi. Reklama yuborish boshlangan vaqt: " . date('Y-m-d H:i:s'), $call_message_id);
 						exit();
 					}
 					$bot->request('answerCallbackQuery',[
-						'callback_query_id'=>$qid,
+						'callback_query_id'=>$call_id,
 						'text'=>'Iltimos reklama yuborishni boshidan boshlang!',
 						'show_alert'=>true
 					]);
@@ -634,7 +634,7 @@
 							'step'=>''
 						],
 						[
-							'fromid'=>$cbid,
+							'fromid'=>$call_from_id,
 							'cn'=>'='
 						]
 					);
@@ -654,7 +654,7 @@
 						]
 					);
 
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($home)->editMessageText('Bosh sahifa.',$mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($home)->editMessageText('Bosh sahifa.',$call_message_id);
 				}
 				if($data == 'home' || $data == 'cancelSendAd'){
 					$db->updateWhere('admins',
@@ -663,11 +663,11 @@
 							'step'=>''
 						],
 						[
-							'fromid'=>$cbid,
+							'fromid'=>$call_from_id,
 							'cn'=>'='
 						]
 					);
-					$bot->sendChatAction('typing', $cbid)->setInlineKeyboard($home)->editMessageText('Bosh sahifa.',$mid);
+					$bot->sendChatAction('typing', $call_from_id)->setInlineKeyboard($home)->editMessageText('Bosh sahifa.',$call_message_id);
 				}
 			}
 		}

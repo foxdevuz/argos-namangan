@@ -18,13 +18,13 @@
 		}else if($update->callback_query){
 			$check_activated = $db->selectWhere('active_users',[
 				[
-					'fromid'=>$cbid,
+					'fromid'=>$call_from_id,
 					'cn'=>'='
 				]
 			]);
 			if (!$check_activated->num_rows) {
 				$db->insertInto('active_users',[
-					'fromid'=>$cbid
+					'fromid'=>$call_from_id
 				]);
 			}
 		}
