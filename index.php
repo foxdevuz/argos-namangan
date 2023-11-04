@@ -76,19 +76,21 @@
             #checking if user subscribed to all required channels
 			if (channel($call_from_id)) {
                 #get data from db about the user
-				$user = mysqli_fetch_assoc(
-					$db->selectWhere('users', [
-						[
-							'fromid'=>$call_from_id,
-							'cn'=>'='
-						]
-					])
-				);
+                $user = mysqli_fetch_assoc(
+                    $db->selectWhere('users',[
+                        [
+                            'fromid'=>$call_from_id,
+                            'cn'=>'='
+                        ]
+                    ])
+                );
                 $user_data = json_decode($user['data']);
 
                 # actions start from here
 				if ($data) {
-                    if ($user_data['region']){
+                    $bot->sendChatAction('typing', $call_from_id)->sendMessage("testing...");
+
+                    if ($user['region']){
                         $db->updateWhere('users',
                             [
                                 'data'=>'default',
@@ -100,7 +102,7 @@
                                 'cn'=>'='
                             ]
                         );
-                        $bot->sendChatAction('typing', $call_from_id)->sendMessage("O'z xabaringizni yuboring", $call_from_id);
+                        $bot->sendChatAction('typing', $call_from_id)->sendMessage("O'z xabaringizni yuboring");
                         exit();
                     }
 				}
@@ -109,4 +111,3 @@
 	}
 
 	include 'helpers/admin/admin.php';
-?>
