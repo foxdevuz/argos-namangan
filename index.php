@@ -57,7 +57,7 @@
 						$bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($regions)->sendMessage("<b>Assalomu alaykum, " . $full_name ."<b>ARGOS Namangan</b>ning rasmiy botiga xush kelibsiz. Viloyatingizni tanlang 👇</b>");
 						exit();
 					}
-                    if ($text){
+                    if ($text && $text != "/start") {
                         if ($user['data'] == "sendMessage"){
                             $user = mysqli_fetch_assoc(
                                 $db->selectWhere('users',[
@@ -77,14 +77,13 @@
                                 'question_id'=>$question_id,
                                 'status'=>'pending_answer',
                             ]);
-
                             #prepare the message eto send Admins
                             $about_user = "Salom adminlar! sizga botdan xabar keldi. Foydalanuvchi ismi:" . $user['name'] . "\nFoydalanuvchi viloyati: " . $user['region'] . "\n\nFoydalanuvchi xabari: " . $text;
 
                             #set answer callback query button
                             $reply_message_button = [
                                 [
-                                    ['text'=>"↪️ Javob Berish", 'callback_data'=>'answer_' . $question_id]
+                                    ['text'=>"↪️ Javob Berish", 'url'=>"https://t.me/argos_namangan_bot?start=question_id".$question_id]
                                 ],
                             ];
 
