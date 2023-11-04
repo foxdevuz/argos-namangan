@@ -23,7 +23,7 @@
 		if (isset($update->message)) {
 			if ($type == 'private') {
                 #insert user to database
-                if($text == '/start'){
+                if(mb_stripos($text, "start")){
                     $exp = explode('start=', $text);
 
                     $bot->sendChatAction('typing', $fromid)->sendMessage("birinchi test" . json_encode($exp));
