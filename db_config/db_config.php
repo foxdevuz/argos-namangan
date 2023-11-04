@@ -4,7 +4,7 @@
 	class DB_CONFIG
 	{
 		// Baza ma'lumotlari
-		private const HOSTNAME = 'foxdevuz.beget.tech';
+		private const HOSTNAME = 'localhost';
 		private const USERNAME = 'foxdevuz_argos';
 		private const PASSWORD = '%0UOEokl';
 		private const DATABASE_NAME = 'foxdevuz_argos';
