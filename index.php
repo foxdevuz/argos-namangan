@@ -77,7 +77,7 @@
 			if (channel($call_from_id)) {
                 #get data from db about the user
 				$user = mysqli_fetch_assoc(
-					$db->selectWhere('users',[
+					$db->selectWhere('users', [
 						[
 							'fromid'=>$call_from_id,
 							'cn'=>'='
