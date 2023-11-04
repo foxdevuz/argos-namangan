@@ -64,6 +64,8 @@
                                 );
                             }
                         }
+                    } else {
+                        $bot->sendChatAction('typing', $fromid)->sendMessage("FUCK!");
                     }
                 }
 
