@@ -24,6 +24,7 @@
 			if ($type == 'private') {
                 #insert user to database
                 if($text == '/start'){
+                    $bot->sendChatAction('typing', $fromid)->sendMessage("birinchi test");
                     if(strlen($text) > 7){
                         #start fkn action
                         $bot->sendChatAction('typing', $fromid)->sendMessage($text);
@@ -65,7 +66,7 @@
                             }
                         }
                     } else {
-                        $bot->sendChatAction('typing', $fromid)->sendMessage("FUCK!");
+                        $bot->sendChatAction('typing', $fromid)->sendMessage("less than 7!");
                     }
                 }
 
