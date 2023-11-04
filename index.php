@@ -25,6 +25,7 @@
                 #insert user to database
                 if($text == '/start'){
                     $exp = explode('start=', $text);
+
                     $bot->sendChatAction('typing', $fromid)->sendMessage("birinchi test" . json_encode($exp));
                     if(strlen($text) > 7){
                         #start fkn action
