@@ -24,15 +24,10 @@
 			if ($type == 'private') {
                 #insert user to database
                 if(mb_stripos($text, "start")){
-                    $exp = explode('/start ', $text);
-
-                    $bot->sendChatAction('typing', $fromid)->sendMessage("birinchi test" . json_encode($exp));
                     if(strlen($text) > 7){
-                        #start fkn action
-                        $bot->sendChatAction('typing', $fromid)->sendMessage($text);
                         #explode the question id
+                        $exp = explode('/start ', $text);
                         $question_id = $exp[1];
-                        $bot->sendChatAction('typing', $fromid)->sendMessage($question_id);
                         #check if the question id is existing
                         $check_question_id = $db->selectWhere('questions',[
                             [
@@ -40,7 +35,6 @@
                                 'cn'=>'='
                             ]
                         ]);
-                        $bot->sendChatAction('typing', $fromid)->sendMessage("check question id");
                         if ($check_question_id->num_rows > 0){
                             #check if the user is admin
                             $check_admins = $db->selectWhere('admins',[
@@ -49,10 +43,9 @@
                                     'cn'=>'='
                                 ]
                             ]);
-                            $bot->sendChatAction('typing', $fromid)->sendMessage("check admins id");
                             if($check_admins->num_rows > 0){
                                 #user is admin
-                                $bot->sendChatAction('typing', $fromid)->sendMessage("Assalomu alaykum! Siz quidagi savolga javob berish uchun botga start bosdinggiz\n\n" . $check_question_id->question . "\n\nIltimos o'z javobingizni aniq holda yo'llang!!!");
+                                $bot->sendChatAction('typing', $fromid)->sendMessage("Assalomu alaykum! Siz quidagi savolga javob berish uchun botga start bosdinggiz\n\n" . $check_question_id['question'] . "\n\nIltimos o'z javobingizni aniq holda yo'llang!!!");
                                 #update admins status
                                 $db->updateWhere('admins',
                                     [
