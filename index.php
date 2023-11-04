@@ -25,8 +25,8 @@
                 #insert user to database
 				if (removeBotUserName($text) == "/start") {
                     $myUser = myUser(['fromid', 'name', 'user', 'chat_type', 'lang', 'del'], [$fromid, $full_name, $user ?? null, 'private', '', 0]);
-                }
-                if ($text == "/start"){
+
+                    #start fkn action
                     $bot->sendChatAction('typing', $fromid)->sendMessage($text);
                     #explode the question id
                     $exp = explode(' ', $text);
@@ -78,7 +78,6 @@
 						])
 					);
 					$user_data = json_decode($user['data']);
-
                     #action starts from next line
                     if (removeBotUserName($text) == "/start") {
 						$db->updateWhere('users',
