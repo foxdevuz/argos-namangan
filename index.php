@@ -34,9 +34,27 @@
                    ]
                ]);
                if ($check_question_id->num_rows > 0){
-
-               } else {
-                   return;
+                  #check if the user is admin
+                   $check_admins = $db->selectWhere('admins',[
+                       [
+                           'fromid'=>$fromid,
+                           'cn'=>'='
+                       ]
+                   ]);
+                   if($check_admins->num_rows > 0){
+                       $bot->sendChatAction('typing', $fromid)->sendMessage("Assalomu alaykum! Siz quidagi savolga javob berish uchun botga start bosdinggiz\n\n" . $check_question_id->question . "\n\nIltimos o'z javobingizni aniq holda yo'llang!!!");
+                       #update admins status
+                       $db->updateWhere('admins',
+                           [
+                               'step'=>'replying',
+                               'question_id'=>$question_id
+                           ],
+                           [
+                               'fromid'=>$fromid,
+                               'cn'=>'='
+                           ]
+                       );
+                   }
                }
            }
 
