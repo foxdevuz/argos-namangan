@@ -54,20 +54,46 @@
 								'cn'=>'='
 							]
 						);
-						$bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($regions)->sendMessage("<b>Assalomu alaykum, " . $full_name ." <b>ARGOS Namangan</b>ning rasmiy botiga xush kelibsiz. Viloyatingizni tanlang</b>");
+						$bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($regions)->sendMessage("<b>Assalomu alaykum, " . $full_name ."<b>ARGOS Namangan</b>ning rasmiy botiga xush kelibsiz. Viloyatingizni tanlang 👇</b>");
 						exit();
 					}
-				}
-			}else{
-				if (removeBotUserName($text) == "/start") {
-					$myUser = myUser(['fromid','name','user','chat_type','lang','del'],[$fromid,$full_name,$user,'group','',0]);
+                    if ($text){
+                        if ($user['data'] == "sendMessage"){
+                            $user = mysqli_fetch_assoc(
+                                $db->selectWhere('users',[
+                                    [
+                                        'fromid'=>$fromid,
+                                        'cn'=>'='
+                                    ]
+                                ])
+                            );
+                            #generate question id
+                            $question_id = md5($text . rand(1, 10000000000));
 
-					if ($myUser) {
-						$bot->sendChatAction('typing', $chat_id)->sendMessage('Assalomu alaykum, xush kelibsiz!');
-						exit();
-					}
-					$bot->sendChatAction('typing', $chat_id)->sendMessage('Assalomu alaykum, qayata xush kelibsiz!');
-					exit();
+                            #insert question to questions table
+                            $db->insertInto('questions', [
+                                'question'=>$text,
+                                'from_id'=>$fromid,
+                                'question_id'=>$question_id,
+                                'status'=>'pending_answer',
+                            ]);
+
+                            #prepare the message eto send Admins
+                            $about_user = "Salom adminlar! sizga botdan xabar keldi. Foydalanuvchi nomi:" . $user['name'] . "\nFoydalanuvchi viloyati: " . $user['region'] . "\n\nFoydalanuvchi xabari: " . $text;
+
+                            #set answer callback query button
+                            $reply_message_button = [
+                                [
+                                    ['text'=>"↪️ Javob Berish", 'callback_data'=>'answer_' . $question_id]
+                                ],
+                            ];
+
+                            #send question to admins channel
+                            $bot->setInlineKeyBoard($reply_message_button)->sendMessage($about_user, $channel_id);
+                            $bot->sendMessage("Xabaringiz yetkazildi iltimos kuting! Biz siz uchun ishlaymiz 🙂", $fromid);
+                            exit();
+                        }
+                    }
 				}
 			}
 		}
@@ -88,12 +114,10 @@
 
                 # actions start from here
 				if ($data) {
-                    $bot->sendChatAction('typing', $call_from_id)->sendMessage("testing...");
-
                     if ($user['data'] == 'region'){
                         $db->updateWhere('users',
                             [
-                                'data'=>'default',
+                                'data'=>'sendMessage',
                                 'step'=>1,
                                 'region'=>$data
                             ],

@@ -42,6 +42,8 @@
             $data = $callback->data;
         }
     }
+
+    $channel_id = -1002118482362; # put the channel name to here
     file_put_contents('log.json', file_get_contents('php://input'));
     $cyrArray = [
         '\"','\n',"\n",'а','б','в','г','д','е','ё','ж','з','и','й','к','л','м','н','о','п',
