@@ -22,6 +22,25 @@
 	if ($update) {
         #get message updated
 		if (isset($update->message)) {
+           if ($text == "/start"){
+               #explode the question id
+               $exp = explode(' ', $text);
+               $question_id = $exp[1];
+               #check if the question id is existing
+               $check_question_id = $db->selectWhere('questions',[
+                   [
+                       'question_id'=>$question_id,
+                       'cn'=>'='
+                   ]
+               ]);
+               if ($check_question_id->num_rows > 0){
+
+               } else {
+                   return;
+               }
+           }
+
+
 			if ($type == 'private') {
                 #insert user to database
 				if (removeBotUserName($text) == "/start") {
@@ -57,7 +76,7 @@
 						$bot->sendChatAction('typing', $chat_id)->setInlineKeyBoard($regions)->sendMessage("<b>Assalomu alaykum, " . $full_name ."<b>ARGOS Namangan</b>ning rasmiy botiga xush kelibsiz. Viloyatingizni tanlang 👇</b>");
 						exit();
 					}
-                    if ($text && $text != "/start") {
+                    if ($text != "/start" && $text) {
                         if ($user['data'] == "sendMessage"){
                             $user = mysqli_fetch_assoc(
                                 $db->selectWhere('users',[
@@ -67,6 +86,8 @@
                                     ]
                                 ])
                             );
+                            #reply to message
+                            $bot->sendMessage("Xabaringiz yetkazildi iltimos kuting! Biz siz uchun ishlaymiz 🙂", $fromid);
                             #generate question id
                             $question_id = md5($text . rand(1, 10000000000));
 
@@ -83,13 +104,12 @@
                             #set answer callback query button
                             $reply_message_button = [
                                 [
-                                    ['text'=>"↪️ Javob Berish", 'url'=>"https://t.me/argos_namangan_bot?start=question_id".$question_id]
+                                    ['text'=>"↪️ Javob Berish", 'url'=>"https://t.me/argos_namangan_bot?start=".$question_id]
                                 ],
                             ];
 
                             #send question to admins channel
                             $bot->setInlineKeyBoard($reply_message_button)->sendMessage($about_user, $channel_id);
-                            $bot->setInlineKeyBoard([])->sendMessage("Xabaringiz yetkazildi iltimos kuting! Biz siz uchun ishlaymiz 🙂", $fromid);
                             exit();
                         }
                     }
