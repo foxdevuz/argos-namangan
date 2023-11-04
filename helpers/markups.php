@@ -16,6 +16,6 @@
             ['text'=>"To'raqo'rg'on tumani", 'callback_data'=>"To'raqo'rg'on"],['text'=>"Uchqo'rg'on tumani", 'callback_data'=>"Uchqo'rg'on"]
         ],
         [
-            ['text'=>"Uychi tumani", 'callback_data'=>'Uychi'],['text'=>"Sirdaryo", 'callback_data'=>"Yangiqo'rgon tumani"]
+            ['text'=>"Uychi tumani", 'callback_data'=>'Uychi']
         ],
     ];
