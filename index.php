@@ -64,47 +64,6 @@
                         }
                     }
                 }
-                #start answer
-                if($text){
-                    if($text != "/start"){
-                        $admin = mysqli_fetch_assoc(
-                            $db->selectWhere('admins',[
-                                [
-                                    'fromid'=>$fromid,
-                                    'cn'=>'='
-                                ]
-                            ])
-                        );
-                        if($admin['step'] == "replying"){
-                            #get the question id form admins table
-                            $question_id_to_answer = $admin['question_id'];
-                            #cehck if question is existing
-                            $question = mysqli_fetch_assoc(
-                                $db->selectWhere('questions',[
-                                    [
-                                        'question_id'=>$question_id_to_answer,
-                                        'cn'=>'='
-                                    ]
-                                ])
-                            );
-                            if ($question->num_rows){
-                                $get_questioner_id = $question['from_id'];
-                                $bot->sendMessage($text, $get_questioner_id);
-                                $db->updateWhere('admins',
-                                    [
-                                        'step'=>' ',
-                                        'question_id'=>" "
-                                    ],
-                                    [
-                                        'fromid'=>$fromid,
-                                        'cn'=>'='
-                                    ]
-                                );
-                                exit();
-                            }
-                        }
-                    }
-                }
 
 
 
