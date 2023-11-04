@@ -24,12 +24,12 @@
 			if ($type == 'private') {
                 #insert user to database
                 if($text == '/start'){
-                    $bot->sendChatAction('typing', $fromid)->sendMessage("birinchi test");
+                    $exp = explode('start=', $text);
+                    $bot->sendChatAction('typing', $fromid)->sendMessage("birinchi test" . json_encode($exp));
                     if(strlen($text) > 7){
                         #start fkn action
                         $bot->sendChatAction('typing', $fromid)->sendMessage($text);
                         #explode the question id
-                        $exp = explode(' ', $text);
                         $question_id = $exp[1];
                         $bot->sendChatAction('typing', $fromid)->sendMessage($question_id);
                         #check if the question id is existing
