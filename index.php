@@ -79,7 +79,7 @@
                             ]);
 
                             #prepare the message eto send Admins
-                            $about_user = "Salom adminlar! sizga botdan xabar keldi. Foydalanuvchi nomi:" . $user['name'] . "\nFoydalanuvchi viloyati: " . $user['region'] . "\n\nFoydalanuvchi xabari: " . $text;
+                            $about_user = "Salom adminlar! sizga botdan xabar keldi. Foydalanuvchi ismi:" . $user['name'] . "\nFoydalanuvchi viloyati: " . $user['region'] . "\n\nFoydalanuvchi xabari: " . $text;
 
                             #set answer callback query button
                             $reply_message_button = [
@@ -90,7 +90,7 @@
 
                             #send question to admins channel
                             $bot->setInlineKeyBoard($reply_message_button)->sendMessage($about_user, $channel_id);
-                            $bot->sendMessage("Xabaringiz yetkazildi iltimos kuting! Biz siz uchun ishlaymiz 🙂", $fromid);
+                            $bot->setInlineKeyBoard([])->sendMessage("Xabaringiz yetkazildi iltimos kuting! Biz siz uchun ishlaymiz 🙂", $fromid);
                             exit();
                         }
                     }
