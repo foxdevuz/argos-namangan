@@ -90,7 +90,7 @@
 				if ($data) {
                     $bot->sendChatAction('typing', $call_from_id)->sendMessage("testing...");
 
-                    if ($user['region']){
+                    if ($user['data'] == 'region'){
                         $db->updateWhere('users',
                             [
                                 'data'=>'default',
