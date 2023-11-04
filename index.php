@@ -29,14 +29,12 @@
                         $exp = explode('/start ', $text);
                         $question_id = $exp[1];
                         #check if the question id is existing
-                        $check_question_id = mysqli_fetch_assoc(
-                            $db->selectWhere('questions',[
+                        $check_question_id = $db->selectWhere('questions',[
                                 [
                                     'question_id'=>$question_id,
                                     'cn'=>'='
                                 ]
-                            ])
-                        );
+                            ]);
                         if ($check_question_id->num_rows > 0){
                             #check if the user is admin
                             $check_admins = $db->selectWhere('admins',[
@@ -65,9 +63,46 @@
                     }
                 }
 
-
-
-
+                if($text){
+                    if($text != "/start"){
+                        $admin = mysqli_fetch_assoc(
+                            $db->selectWhere('admins',[
+                                [
+                                    'fromid'=>$fromid,
+                                    'cn'=>'='
+                                ]
+                            ])
+                        );
+                        if($admin['step'] == "replying"){
+                            #get the question id form admins table
+                            $question_id_to_answer = $admin['question_id'];
+                            #cehck if question is existing
+                            $question = mysqli_fetch_assoc(
+                                $db->selectWhere('questions',[
+                                    [
+                                        'question_id'=>$question_id_to_answer,
+                                        'cn'=>'='
+                                    ]
+                                ])
+                            );
+                            if ($question->num_rows){
+                                $get_questioner_id = $question['from_id'];
+                                $bot->sendMessage($text, $get_questioner_id);
+                                $db->updateWhere('admins',
+                                    [
+                                        'step'=>' ',
+                                        'question_id'=>" "
+                                    ],
+                                    [
+                                        'fromid'=>$fromid,
+                                        'cn'=>'='
+                                    ]
+                                );
+                                exit();
+                            }
+                        }
+                    }
+                }
 
 				if (removeBotUserName($text) == "/start") {
                     $myUser = myUser(['fromid', 'name', 'user', 'chat_type', 'lang', 'del'], [$fromid, $full_name, $user ?? null, 'private', '', 0]);
