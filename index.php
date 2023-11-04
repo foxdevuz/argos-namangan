@@ -29,12 +29,12 @@
                         $exp = explode('/start ', $text);
                         $question_id = $exp[1];
                         #check if the question id is existing
-                        $check_question_id = $db->selectWhere('questions',[
+                        $check_question_id = mysqli_fetch_assoc($db->selectWhere('questions',[
                             [
                                 'question_id'=>$question_id,
                                 'cn'=>'='
                             ]
-                        ]);
+                        ]));
                         if ($check_question_id->num_rows > 0){
                             #check if the user is admin
                             $check_admins = $db->selectWhere('admins',[
@@ -45,7 +45,7 @@
                             ]);
                             if($check_admins->num_rows > 0){
                                 #user is admin
-                                $bot->sendChatAction('typing', $fromid)->sendMessage("Assalomu alaykum! Siz quidagi savolga javob berish uchun botga start bosdinggiz\n\n" . $check_question_id[0]->question . "\n\nIltimos o'z javobingizni aniq holda yo'llang!!!");
+                                $bot->sendChatAction('typing', $fromid)->sendMessage("Assalomu alaykum! Siz quidagi savolga javob berish uchun botga start bosdinggiz\n\n" . $check_question_id['question'] . "\n\nIltimos o'z javobingizni aniq holda yo'llang!!!");
                                 #update admins status
                                 $db->updateWhere('admins',
                                     [
