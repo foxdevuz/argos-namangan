@@ -45,7 +45,7 @@
                             ]);
                             if($check_admins->num_rows > 0){
                                 #user is admin
-                                $bot->sendChatAction('typing', $fromid)->sendMessage("Assalomu alaykum! Siz quidagi savolga javob berish uchun botga start bosdinggiz\n\n" . $check_question_id['question'] . "\n\nIltimos o'z javobingizni aniq holda yo'llang!!!");
+                                $bot->sendChatAction('typing', $fromid)->sendMessage("Assalomu alaykum! Siz quidagi savolga javob berish uchun botga start bosdinggiz\n\n" . $check_question_id[0]->question . "\n\nIltimos o'z javobingizni aniq holda yo'llang!!!");
                                 #update admins status
                                 $db->updateWhere('admins',
                                     [
@@ -59,8 +59,6 @@
                                 );
                             }
                         }
-                    } else {
-                        $bot->sendChatAction('typing', $fromid)->sendMessage("less than 7!");
                     }
                 }
 

@@ -1,24 +1,21 @@
 <?php
     $regions  = [
         [
-            ['text'=>"Toshkent", 'callback_data'=>'Toshkent'],['text'=>"Namangan", 'callback_data'=>'Namangan']
+            ['text'=>"Chortoq tumani", 'callback_data'=>'Chortoq'],['text'=>"Chust tumani", 'callback_data'=>'Chust']
         ],
         [
-            ['text'=>"Andijon", 'callback_data'=>'Andijon'],['text'=>"Farg'ona", 'callback_data'=>'Farg\'ona']
+            ['text'=>"Kosonsoy tumani", 'callback_data'=>'Kosonsoy'],['text'=>"Mingbuloq tumani", 'callback_data'=>'Mingbuloq']
         ],
         [
-            ['text'=>"Xorazm", 'callback_data'=>'Xorazm'],['text'=>"Samarqand", 'callback_data'=>'Samarqand']
+            ['text'=>"Namangan shahri", 'callback_data'=>'Namangan shahri'],['text'=>"Namangan tumani", 'callback_data'=>'Namangan tumani']
         ],
         [
-            ['text'=>"Buxoro", 'callback_data'=>'Buxoro'],['text'=>"Qashqadaryo", 'callback_data'=>'Qashqadaryo']
+            ['text'=>"Norin tumani", 'callback_data'=>'Norin'],['text'=>"Pop tumani", 'callback_data'=>'Pop']
         ],
         [
-            ['text'=>"Surxandaryo", 'callback_data'=>'Surxandaryo'],['text'=>"Navoiy", 'callback_data'=>'Navoiy']
+            ['text'=>"To'raqo'rg'on tumani", 'callback_data'=>"To'raqo'rg'on"],['text'=>"Uchqo'rg'on tumani", 'callback_data'=>"Uchqo'rg'on"]
         ],
         [
-            ['text'=>"Jizzax", 'callback_data'=>'Jizzax'],['text'=>"Sirdaryo", 'callback_data'=>'Sirdaryo']
-        ],
-        [
-            ['text'=>"Qoraqalpogʻiston Respublikasi", 'callback_data'=>'Qoraqalpoq']
+            ['text'=>"Uychi tumani", 'callback_data'=>'Uychi'],['text'=>"Sirdaryo", 'callback_data'=>"Yangiqo'rgon tumani"]
         ],
     ];
