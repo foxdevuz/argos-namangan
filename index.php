@@ -25,12 +25,6 @@
                 #insert user to database
 				if (removeBotUserName($text) == "/start") {
                     $myUser = myUser(['fromid', 'name', 'user', 'chat_type', 'lang', 'del'], [$fromid, $full_name, $user ?? null, 'private', '', 0]);
-
-                    if(strlen($text) > 7){
-                        $exp = explode(' ', $text);
-                        $question_id = $exp[1];
-                        $bot->sendChatAction('typing', $chat_id)->sendMessage($question_id);
-                    }
                 }
                 #check if user is subscribed to all required channels
 				if (channel($fromid)) {
@@ -44,6 +38,7 @@
 						])
 					);
 					$user_data = json_decode($user['data']);
+
                     #action starts from next line
                     if (removeBotUserName($text) == "/start") {
 						$db->updateWhere('users',
@@ -102,7 +97,8 @@
         #get callback query updates
         else if (isset($update->callback_query)) {
             #checking if user subscribed to all required channels
-			if (channel($call_from_id)) {                #get data from db about the user
+			if (channel($call_from_id)) {
+                #get data from db about the user
                 $user = mysqli_fetch_assoc(
                     $db->selectWhere('users',[
                         [
