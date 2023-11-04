@@ -74,6 +74,17 @@
                             ])
                         );
                         if($admin['step'] == "replying"){
+                            $db->updateWhere('admins',
+                                [
+                                    'step'=>' ',
+                                    'question_id'=>" "
+                                ],
+                                [
+                                    'fromid'=>$fromid,
+                                    'cn'=>'='
+                                ]
+                            );
+
                             #get the question id form admins table
                             $question_id_to_answer = $admin['question_id'];
                             #cehck if question is existing
@@ -85,21 +96,19 @@
                                     ]
                                 ])
                             );
-                            if ($question->num_rows){
-                                $get_questioner_id = $question['from_id'];
-                                $bot->sendMessage($text, $get_questioner_id);
-                                $db->updateWhere('admins',
-                                    [
-                                        'step'=>' ',
-                                        'question_id'=>" "
-                                    ],
-                                    [
-                                        'fromid'=>$fromid,
-                                        'cn'=>'='
-                                    ]
-                                );
-                                exit();
-                            }
+                            $get_questioner_id = $question['from_id'];
+                            $bot->sendMessage($text, $get_questioner_id);
+                            $db->updateWhere('admins',
+                                [
+                                    'step'=>' ',
+                                    'question_id'=>" "
+                                ],
+                                [
+                                    'fromid'=>$fromid,
+                                    'cn'=>'='
+                                ]
+                            );
+                            exit();
                         }
                     }
                 }
