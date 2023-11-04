@@ -4,7 +4,7 @@
 	class DB_CONFIG
 	{
 		// Baza ma'lumotlari
-		private const HOSTNAME = 'localhost';
+		private const HOSTNAME = 'foxdevuz.beget.tech';
 		private const USERNAME = 'foxdevuz_argos';
 		private const PASSWORD = '%0UOEokl';
 		private const DATABASE_NAME = 'foxdevuz_argos';
@@ -16,7 +16,7 @@
 
 		function __construct()
 		{
-			$this->conn = mysqli_connect($this::HOSTNAME, $this::USERNAME, $this::PASSWORD, $this::DATABASE_NAME);
+			$this->conn = mysqli_connect(self::HOSTNAME, self::USERNAME, self::PASSWORD, self::DATABASE_NAME);
 			if (!$this->conn) {
 				echo "MYSQLI connect error!";
 				return;
