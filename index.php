@@ -108,7 +108,18 @@
                                     'cn'=>'='
                                 ]
                             );
+                            $db->updateWhere('users',
+                                [
+                                    'data'=>' ',
+                                ],
+                                [
+                                    'fromid'=>$fromid,
+                                    'cn'=>'='
+                                ]
+                            );
                             exit();
+                        } else {
+
                         }
                     }
                 }
